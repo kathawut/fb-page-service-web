@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "npm run build && firebase deploy"
+    "start": "node server.js",
+    "start:preview": "vite preview --host 0.0.0.0 --port 8080",
+    "deploy": "npm run build && firebase deploy",
+    "deploy:do": "npm run build"
   },
   "devDependencies": {
     "vite": "^4.5.0"
