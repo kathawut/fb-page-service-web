@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Comments API Tester</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #1c1e21;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #1877f2, #42b883);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #1877f2;
+            box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1);
+        }
+        .btn {
+            background: #1877f2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: #166fe5;
+            transform: translateY(-1px);
+        }
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .response-section {
+            padding: 30px;
+        }
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .response-header h3 {
+            margin: 0;
+            color: #1877f2;
+        }
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status-loading {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .response-container {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .comment-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: box-shadow 0.3s ease;
+        }
+        .comment-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .comment-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        .comment-author {
+            font-weight: 600;
+            color: #1877f2;
+        }
+        .comment-message {
+            color: #1c1e21;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        .comment-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+        .json-viewer {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .view-toggle {
+            margin-bottom: 20px;
+        }
+        .view-toggle button {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .view-toggle button.active {
+            background: #1877f2;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1877f2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #f5c6cb;
+            margin-bottom: 20px;
+        }
+        .info-box {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #bee5eb;
+            margin-bottom: 20px;
+        }
+        .url-display {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+            margin-bottom: 15px;
+        }
+        .comment-permalink {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-left: 3px solid #1877f2;
+            border-radius: 4px;
+        }
+        .comment-permalink a {
+            color: #1877f2;
+            text-decoration: none;
+            font-size: 12px;
+        }
+        .comment-permalink a:hover {
+            text-decoration: underline;
+        }
+        .permalink-embed {
+            margin-top: 10px;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .permalink-embed iframe {
+            width: 100%;
+            height: 200px;
+            border: none;
+        }
+        .embed-toggle {
+            font-size: 11px;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 5px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 3px;
+            margin-top: 5px;
+        }
+        .embed-toggle:hover {
+            background: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Facebook Comments API Tester</h1>
+            <p>Test Facebook Pages API service for retrieving post comments</p>
+        </div>
+
+        <div class="controls">
+            <div class="info-box">
+                <strong>API Service:</strong> https://fb-page-service-azzre.ondigitalocean.app/api/posts/{POST_ID}/comments<br>
+                <strong>Fields:</strong> id, message, created_time, from, like_count, comment_count, permalink_url
+            </div>
+
+            <div class="form-group">
+                <label for="authToken">Authorization Token (Bearer)</label>
+                <input 
+                    type="text" 
+                    id="authToken" 
+                    class="form-control" 
+                    placeholder="Enter your access token here..."
+                    value="EAAOtXRfbMtIBPCsyrAF7ZArB491iyr8KYHke8taRd0vZAK9GZAJaa9ZACc81XZAWZA2QZCpLDZC2ECKQW6BTeHo3cXRck6ZAPD7ccB9QojskyLeDOcDt9NW4bOfa7k5RPMSfTFWZATjDpqEHiJ5eSjxpuq9ekHSVQU5vuzpveOtZBud7nUm8ft0fS33yLh9NmlpVOAINHZCmunm7mhJnXTmjYK6oYcTQZALE54Y5VIZC9fUm16221GTP8sBvpuC2Hk"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="postId">Post ID</label>
+                <input 
+                    type="text" 
+                    id="postId" 
+                    class="form-control" 
+                    placeholder="Enter post ID (e.g., 725289260668012_122098845938970288)"
+                    value="725289260668012_122098845938970288"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="limit">Limit (Number of comments)</label>
+                <input 
+                    type="number" 
+                    id="limit" 
+                    class="form-control" 
+                    placeholder="Enter limit (e.g., 400)"
+                    value="400"
+                    min="1"
+                    max="1000"
+                >
+            </div>
+
+            <div class="url-display" id="urlDisplay">
+                URL will be displayed here...
+            </div>
+
+            <button class="btn" id="fetchBtn" onclick="fetchComments()">
+                <span id="btnText">Fetch Comments</span>
+            </button>
+            
+            <button class="btn" style="background: #6c757d; margin-left: 10px;" onclick="testCORS()">
+                Test CORS
+            </button>
+        </div>
+
+        <div class="response-section">
+            <div class="response-header">
+                <h3>API Response</h3>
+                <div class="status-badge" id="statusBadge">Ready</div>
+            </div>
+
+            <div class="view-toggle" id="viewToggle" style="display: none;">
+                <button onclick="setView('formatted')" class="active" id="formattedBtn">Formatted View</button>
+                <button onclick="setView('json')" id="jsonBtn">Raw JSON</button>
+            </div>
+
+            <div class="response-container" id="responseContainer">
+                <div style="text-align: center; color: #6c757d; padding: 40px;">
+                    Enter your authorization token and click "Fetch Comments" to test the API
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentView = 'formatted';
+        let responseData = null;
+
+        // Update URL display when inputs change
+        function updateUrlDisplay() {
+            const postId = document.getElementById('postId').value || '{POST_ID}';
+            const limit = document.getElementById('limit').value || '{LIMIT}';
+            const url = `https://fb-page-service-azzre.ondigitalocean.app/api/posts/${postId}/comments?limit=${limit}&order=reverse_chronological&fields=id,message,created_time,from,like_count,comment_count,permalink_url`;
+            document.getElementById('urlDisplay').textContent = url;
+        }
+
+        // Add event listeners to update URL display
+        document.getElementById('postId').addEventListener('input', updateUrlDisplay);
+        document.getElementById('limit').addEventListener('input', updateUrlDisplay);
+
+        // Initialize URL display
+        updateUrlDisplay();
+
+        async function fetchComments() {
+            const authToken = document.getElementById('authToken').value.trim();
+            const postId = document.getElementById('postId').value.trim();
+            const limit = document.getElementById('limit').value.trim();
+
+            if (!authToken) {
+                showError('Please enter an authorization token');
+                return;
+            }
+
+            if (!postId) {
+                showError('Please enter a post ID');
+                return;
+            }
+
+            if (!limit || limit <= 0) {
+                showError('Please enter a valid limit number');
+                return;
+            }
+
+            const url = `https://fb-page-service-azzre.ondigitalocean.app/api/posts/${postId}/comments?limit=${limit}&order=reverse_chronological&fields=id,message,created_time,from,like_count,comment_count,permalink_url`;
+            
+            console.log('Making API request to:', url);
+            console.log('With token:', authToken.substring(0, 20) + '...');
+            
+            setLoading(true);
+            setStatus('loading', 'Loading...');
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', [...response.headers.entries()]);
+
+                const data = await response.json();
+                console.log('Response data:', data);
+                console.log('Full response structure:', JSON.stringify(data, null, 2));
+                
+                responseData = { response, data };
+
+                if (response.ok) {
+                    setStatus('success', `Success (${response.status})`);
+                    displayResponse(data);
+                } else {
+                    setStatus('error', `Error (${response.status})`);
+                    displayError(data);
+                }
+
+            } catch (error) {
+                console.error('Full error details:', error);
+                setStatus('error', 'Network Error');
+                
+                let errorMessage = `Network error: ${error.message}`;
+                
+                // Check for specific error types
+                if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+                    errorMessage = 'CORS Error: Cannot access the API from this domain. This might be due to CORS policy restrictions.';
+                } else if (error.message.includes('ERR_NETWORK')) {
+                    errorMessage = 'Network Error: Cannot reach the API server. Please check your internet connection.';
+                }
+                
+                showError(errorMessage);
+                responseData = { error };
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function setLoading(loading) {
+            const btn = document.getElementById('fetchBtn');
+            const btnText = document.getElementById('btnText');
+            
+            if (loading) {
+                btn.disabled = true;
+                btnText.innerHTML = '<span class="loading-spinner"></span>Loading...';
+            } else {
+                btn.disabled = false;
+                btnText.textContent = 'Fetch Comments';
+            }
+        }
+
+        function setStatus(type, text) {
+            const badge = document.getElementById('statusBadge');
+            badge.className = `status-badge status-${type}`;
+            badge.textContent = text;
+        }
+
+        function showError(message) {
+            const container = document.getElementById('responseContainer');
+            container.innerHTML = `
+                <div class="error-message">
+                    <strong>Error:</strong> ${message}
+                </div>
+            `;
+            document.getElementById('viewToggle').style.display = 'none';
+        }
+
+        function displayError(errorData) {
+            const container = document.getElementById('responseContainer');
+            container.innerHTML = `
+                <div class="error-message">
+                    <strong>API Error:</strong> ${JSON.stringify(errorData, null, 2)}
+                </div>
+            `;
+            document.getElementById('viewToggle').style.display = 'block';
+        }
+
+        function displayResponse(data) {
+            document.getElementById('viewToggle').style.display = 'block';
+            
+            if (currentView === 'formatted') {
+                displayFormattedComments(data);
+            } else {
+                displayRawJson(data);
+            }
+        }
+
+        function displayFormattedComments(data) {
+            const container = document.getElementById('responseContainer');
+            
+            if (!data.data || !Array.isArray(data.data)) {
+                container.innerHTML = '<div class="error-message">Invalid response format: Expected data array</div>';
+                return;
+            }
+
+            const comments = data.data;
+            
+            if (comments.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #6c757d; padding: 40px;">No comments found</div>';
+                return;
+            }
+
+            let html = `
+                <div style="margin-bottom: 20px; padding: 15px; background: #e8f4fd; border-radius: 8px;">
+                    <strong>Total Comments:</strong> ${comments.length} | 
+                    <strong>Response Time:</strong> ${new Date().toLocaleString()}
+                </div>
+            `;
+
+            comments.forEach((comment, index) => {
+                const createdTime = comment.created_time ? new Date(comment.created_time).toLocaleString() : 'Unknown';
+                const likeCount = comment.like_count || 0;
+                const commentCount = comment.comment_count || 0;
+                
+                // Enhanced permalink_url detection and validation
+                let permalinkUrl = null;
+                
+                // Check all possible permalink_url variations
+                if (comment.permalink_url && typeof comment.permalink_url === 'string' && comment.permalink_url.trim()) {
+                    permalinkUrl = comment.permalink_url.trim();
+                } else if (comment.permalinkUrl && typeof comment.permalinkUrl === 'string' && comment.permalinkUrl.trim()) {
+                    permalinkUrl = comment.permalinkUrl.trim();
+                } else if (comment.permalink && typeof comment.permalink === 'string' && comment.permalink.trim()) {
+                    permalinkUrl = comment.permalink.trim();
+                }
+                
+                // Validate URL format
+                if (permalinkUrl && !permalinkUrl.startsWith('http')) {
+                    permalinkUrl = null; // Invalid URL format
+                }
+                
+                // Enhanced debugging for permalink_url
+                console.log(`Comment ${index + 1}:`, {
+                    id: comment.id,
+                    permalink_url: comment.permalink_url,
+                    permalinkUrl: comment.permalinkUrl,
+                    permalink: comment.permalink,
+                    finalPermalinkUrl: permalinkUrl,
+                    allKeys: Object.keys(comment)
+                });
+                
+                html += `
+                    <div class="comment-item">
+                        <div class="comment-meta">
+                            <span class="comment-author">${comment.from?.name || 'Unknown User'}</span>
+                            <span>${createdTime}</span>
+                        </div>
+                        <div class="comment-message">
+                            ${comment.message || '<em>No message content</em>'}
+                        </div>
+                        <div class="comment-stats">
+                            <span>👍 ${likeCount} likes</span>
+                            <span>💬 ${commentCount} replies</span>
+                            <span>ID: ${comment.id}</span>
+                        </div>
+                        ${permalinkUrl ? `
+                            <div class="comment-permalink">
+                                <strong>📎 Permalink:</strong> 
+                                <a href="${permalinkUrl}" target="_blank" rel="noopener noreferrer">${permalinkUrl}</a>
+                                <button class="embed-toggle" onclick="toggleEmbed('embed-${index}')" title="Toggle embed preview">
+                                    👁️ Preview
+                                </button>
+                                <div id="embed-${index}" class="permalink-embed" style="display: none;">
+                                    <iframe src="${permalinkUrl}" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+                                </div>
+                            </div>
+                        ` : `
+                            <div class="comment-permalink" style="color: #6c757d; font-style: italic;">
+                                📎 Permalink: Not available 
+                                <details style="margin-top: 5px;">
+                                    <summary style="cursor: pointer; font-size: 11px;">Debug Info</summary>
+                                    <pre style="font-size: 10px; background: #f0f0f0; padding: 5px; margin: 5px 0;">${JSON.stringify({
+                                        permalink_url: comment.permalink_url,
+                                        permalinkUrl: comment.permalinkUrl,
+                                        permalink: comment.permalink,
+                                        type_permalink_url: typeof comment.permalink_url,
+                                        available_fields: Object.keys(comment)
+                                    }, null, 2)}</pre>
+                                </details>
+                            </div>
+                        `}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function displayRawJson(data) {
+            const container = document.getElementById('responseContainer');
+            container.innerHTML = `
+                <div class="json-viewer">${JSON.stringify(data, null, 2)}</div>
+            `;
+        }
+
+        function setView(view) {
+            currentView = view;
+            
+            // Update button states
+            document.getElementById('formattedBtn').className = view === 'formatted' ? 'active' : '';
+            document.getElementById('jsonBtn').className = view === 'json' ? 'active' : '';
+            
+            // Redisplay response in new format
+            if (responseData && responseData.data) {
+                displayResponse(responseData.data);
+            }
+        }
+
+        // Test CORS and basic connectivity
+        async function testCORS() {
+            setStatus('loading', 'Testing CORS...');
+            
+            try {
+                console.log('Testing basic connectivity...');
+                
+                // Test basic connectivity first
+                const testUrl = 'https://fb-page-service-azzre.ondigitalocean.app/api/posts/test/comments?limit=1&order=reverse_chronological';
+                
+                const response = await fetch(testUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer test',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('Test response status:', response.status);
+                const data = await response.text();
+                console.log('Test response:', data);
+                
+                setStatus('success', 'CORS Test Complete');
+                
+                const container = document.getElementById('responseContainer');
+                container.innerHTML = `
+                    <div class="info-box">
+                        <strong>CORS Test Results:</strong><br>
+                        Status: ${response.status}<br>
+                        Response: ${data.substring(0, 200)}...
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('CORS test error:', error);
+                setStatus('error', 'CORS Test Failed');
+                
+                const container = document.getElementById('responseContainer');
+                container.innerHTML = `
+                    <div class="error-message">
+                        <strong>CORS Test Failed:</strong><br>
+                        Error: ${error.message}<br><br>
+                        <strong>Possible Solutions:</strong><br>
+                        1. The API server may not allow cross-origin requests from file:// protocol<br>
+                        2. Try running this page from a web server (http://localhost)<br>
+                        3. The API server might be down or unreachable<br>
+                        4. Check your internet connection
+                    </div>
+                `;
+            }
+        }
+
+        // Toggle embed iframe visibility
+        function toggleEmbed(embedId) {
+            const embedDiv = document.getElementById(embedId);
+            const button = embedDiv.previousElementSibling;
+            
+            if (embedDiv.style.display === 'none') {
+                embedDiv.style.display = 'block';
+                button.textContent = '🙈 Hide';
+                button.title = 'Hide embed preview';
+            } else {
+                embedDiv.style.display = 'none';
+                button.textContent = '👁️ Preview';
+                button.title = 'Show embed preview';
+            }
+        }
+    </script>
+</body>
+</html>

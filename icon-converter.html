@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG to PNG Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .icon-preview {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .download-btn {
+            background: #1877f2;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .download-btn:hover {
+            background: #166fe5;
+        }
+        canvas {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Facebook Pages Feed Comment App Icon</h1>
+        <p>1024x1024 PNG Icon Generator</p>
+        
+        <div class="icon-preview">
+            <svg id="iconSvg" width="200" height="200" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Background circle -->
+                <circle cx="512" cy="512" r="480" fill="#1877f2" stroke="#fff" stroke-width="64"/>
+                
+                <!-- Feed post container -->
+                <rect x="192" y="256" width="448" height="320" rx="64" fill="white"/>
+                
+                <!-- Feed post lines -->
+                <rect x="256" y="320" width="320" height="32" fill="#1877f2" rx="16"/>
+                <rect x="256" y="384" width="256" height="24" fill="#42B883" rx="12"/>
+                <rect x="256" y="432" width="192" height="24" fill="#42B883" rx="12"/>
+                <rect x="256" y="480" width="288" height="24" fill="#42B883" rx="12"/>
+                <rect x="256" y="528" width="224" height="24" fill="#42B883" rx="12"/>
+                
+                <!-- Comment bubble -->
+                <path d="M384 608C384 572.64 412.64 544 448 544H704C739.36 544 768 572.64 768 608V736C768 771.36 739.36 800 704 800H512L416 864V800H448C412.64 800 384 771.36 384 736V608Z" fill="white"/>
+                
+                <!-- Comment lines -->
+                <rect x="448" y="608" width="256" height="24" fill="#1877f2" rx="12"/>
+                <rect x="448" y="656" width="192" height="24" fill="#6B7280" rx="12"/>
+                <rect x="448" y="704" width="224" height="24" fill="#6B7280" rx="12"/>
+                
+                <!-- Small Facebook "f" logo -->
+                <circle cx="800" cy="224" r="96" fill="white"/>
+                <circle cx="800" cy="224" r="72" fill="#1877f2"/>
+                <path d="M824 184V264M760 224H840" stroke="white" stroke-width="16" stroke-linecap="round"/>
+                
+                <!-- Additional decorative elements -->
+                <!-- Like/reaction icons -->
+                <circle cx="256" cy="672" r="20" fill="#FF6B6B"/>
+                <path d="M256 660L266 670L246 670Z" fill="white"/>
+                
+                <circle cx="320" cy="672" r="20" fill="#4ECDC4"/>
+                <path d="M320 660C325 660 330 665 330 670C330 675 325 680 320 680C315 680 310 675 310 670C310 665 315 660 320 660Z" fill="white"/>
+                
+                <!-- Engagement indicators -->
+                <rect x="192" y="720" width="80" height="16" fill="#E5E7EB" rx="8"/>
+                <rect x="192" y="720" width="56" height="16" fill="#1877f2" rx="8"/>
+                
+                <rect x="192" y="752" width="120" height="16" fill="#E5E7EB" rx="8"/>
+                <rect x="192" y="752" width="84" height="16" fill="#42B883" rx="8"/>
+            </svg>
+        </div>
+        
+        <canvas id="canvas" width="1024" height="1024" style="display: none;"></canvas>
+        
+        <div>
+            <button class="download-btn" onclick="downloadPNG()">Download 1024x1024 PNG</button>
+        </div>
+        
+        <p><strong>Instructions:</strong> Click the download button to save the icon as a PNG file.</p>
+    </div>
+
+    <script>
+        function downloadPNG() {
+            const svg = document.getElementById('iconSvg');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Create a new SVG with 1024x1024 dimensions
+            const svgData = `
+                <svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Background circle -->
+                    <circle cx="512" cy="512" r="480" fill="#1877f2" stroke="#fff" stroke-width="64"/>
+                    
+                    <!-- Feed post container -->
+                    <rect x="192" y="256" width="448" height="320" rx="64" fill="white"/>
+                    
+                    <!-- Feed post lines -->
+                    <rect x="256" y="320" width="320" height="32" fill="#1877f2" rx="16"/>
+                    <rect x="256" y="384" width="256" height="24" fill="#42B883" rx="12"/>
+                    <rect x="256" y="432" width="192" height="24" fill="#42B883" rx="12"/>
+                    <rect x="256" y="480" width="288" height="24" fill="#42B883" rx="12"/>
+                    <rect x="256" y="528" width="224" height="24" fill="#42B883" rx="12"/>
+                    
+                    <!-- Comment bubble -->
+                    <path d="M384 608C384 572.64 412.64 544 448 544H704C739.36 544 768 572.64 768 608V736C768 771.36 739.36 800 704 800H512L416 864V800H448C412.64 800 384 771.36 384 736V608Z" fill="white"/>
+                    
+                    <!-- Comment lines -->
+                    <rect x="448" y="608" width="256" height="24" fill="#1877f2" rx="12"/>
+                    <rect x="448" y="656" width="192" height="24" fill="#6B7280" rx="12"/>
+                    <rect x="448" y="704" width="224" height="24" fill="#6B7280" rx="12"/>
+                    
+                    <!-- Small Facebook "f" logo -->
+                    <circle cx="800" cy="224" r="96" fill="white"/>
+                    <circle cx="800" cy="224" r="72" fill="#1877f2"/>
+                    <path d="M824 184V264M760 224H840" stroke="white" stroke-width="16" stroke-linecap="round"/>
+                    
+                    <!-- Additional decorative elements -->
+                    <!-- Like/reaction icons -->
+                    <circle cx="256" cy="672" r="20" fill="#FF6B6B"/>
+                    <path d="M256 660L266 670L246 670Z" fill="white"/>
+                    
+                    <circle cx="320" cy="672" r="20" fill="#4ECDC4"/>
+                    <path d="M320 660C325 660 330 665 330 670C330 675 325 680 320 680C315 680 310 675 310 670C310 665 315 660 320 660Z" fill="white"/>
+                    
+                    <!-- Engagement indicators -->
+                    <rect x="192" y="720" width="80" height="16" fill="#E5E7EB" rx="8"/>
+                    <rect x="192" y="720" width="56" height="16" fill="#1877f2" rx="8"/>
+                    
+                    <rect x="192" y="752" width="120" height="16" fill="#E5E7EB" rx="8"/>
+                    <rect x="192" y="752" width="84" height="16" fill="#42B883" rx="8"/>
+                </svg>
+            `;
+            
+            const img = new Image();
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml'});
+            const url = URL.createObjectURL(svgBlob);
+            
+            img.onload = function() {
+                ctx.clearRect(0, 0, 1024, 1024);
+                ctx.drawImage(img, 0, 0, 1024, 1024);
+                
+                canvas.toBlob(function(blob) {
+                    const link = document.createElement('a');
+                    link.download = 'icon-1024.png';
+                    link.href = URL.createObjectURL(blob);
+                    link.click();
+                    
+                    URL.revokeObjectURL(url);
+                    URL.revokeObjectURL(link.href);
+                }, 'image/png', 1.0);
+            };
+            
+            img.src = url;
+        }
+    </script>
+</body>
+</html>

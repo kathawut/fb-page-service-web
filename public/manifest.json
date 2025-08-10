@@ -1,0 +1,26 @@
+{
+  "name": "Facebook Pages API - Feed Comment Manager",
+  "short_name": "FB Feed Comments",
+  "description": "Privacy Policy and Terms of Service for Facebook Pages API feed comment application",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1877f2",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
+}

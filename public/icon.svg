@@ -1,0 +1,26 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="#1877f2" stroke="#fff" stroke-width="4"/>
+  
+  <!-- Feed post container -->
+  <rect x="12" y="16" width="28" height="20" rx="4" fill="white"/>
+  
+  <!-- Feed post lines -->
+  <rect x="16" y="20" width="20" height="2" fill="#1877f2" rx="1"/>
+  <rect x="16" y="24" width="16" height="1.5" fill="#42B883" rx="0.75"/>
+  <rect x="16" y="27" width="12" height="1.5" fill="#42B883" rx="0.75"/>
+  <rect x="16" y="30" width="18" height="1.5" fill="#42B883" rx="0.75"/>
+  
+  <!-- Comment bubble -->
+  <path d="M24 38C24 35.79 25.79 34 28 34H44C46.21 34 48 35.79 48 38V46C48 48.21 46.21 50 44 50H32L26 54V50H28C25.79 50 24 48.21 24 46V38Z" fill="white"/>
+  
+  <!-- Comment lines -->
+  <rect x="28" y="38" width="16" height="1.5" fill="#1877f2" rx="0.75"/>
+  <rect x="28" y="41" width="12" height="1.5" fill="#6B7280" rx="0.75"/>
+  <rect x="28" y="44" width="14" height="1.5" fill="#6B7280" rx="0.75"/>
+  
+  <!-- Small Facebook "f" logo -->
+  <circle cx="50" cy="14" r="6" fill="white"/>
+  <circle cx="50" cy="14" r="4.5" fill="#1877f2"/>
+  <path d="M51.5 11.5V16.5M48.5 14H52.5" stroke="white" stroke-width="1" stroke-linecap="round"/>
+</svg>
