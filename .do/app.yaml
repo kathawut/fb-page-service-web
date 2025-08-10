@@ -1,18 +1,20 @@
 name: facebook-pages-api-web
-static_sites:
-- name: privacy-policy-app
+services:
+- name: web
   source_dir: /
   github:
     repo: kathawut/fb-page-service-web
     branch: main
   build_command: npm run build && cp public/comments-tester.html dist/
-  output_dir: dist
-  index_document: index.html
-  error_document: index.html
+  run_command: npm start
+  environment_slug: node-js
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  http_port: 8080
   routes:
   - path: /
-  - path: /comments-tester.html
-  catchall_document: index.html
   envs:
   - key: NODE_ENV
     value: production
+  - key: PORT
+    value: "8080"

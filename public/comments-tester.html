@@ -388,9 +388,16 @@
             
             // Show different URLs for development vs production
             const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const baseUrl = isDevelopment 
-                ? '/api' // Use Vite proxy in development
-                : 'https://fb-page-service-azzre.ondigitalocean.app/api'; // Direct URL in production
+            const isDigitalOceanApp = window.location.hostname.includes('.ondigitalocean.app');
+            
+            let baseUrl;
+            if (isDevelopment) {
+                baseUrl = '/api'; // Use Vite proxy in development
+            } else if (isDigitalOceanApp) {
+                baseUrl = '/api'; // Use Node.js proxy on DigitalOcean App Platform
+            } else {
+                baseUrl = 'https://fb-page-service-azzre.ondigitalocean.app/api'; // Direct URL for other platforms
+            }
             
             const url = `${baseUrl}/posts/${postId}/comments?limit=${limit}&order=reverse_chronological&fields=id,message,created_time,from,like_count,comment_count,permalink_url,attachment{type,title,description,url,target,media{image{src,width,height}}}`;
             document.getElementById('urlDisplay').textContent = url;
@@ -406,9 +413,13 @@
         // Update API service info based on environment
         function updateApiServiceInfo() {
             const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const isDigitalOceanApp = window.location.hostname.includes('.ondigitalocean.app');
             const apiServiceInfo = document.getElementById('apiServiceInfo');
+            
             if (isDevelopment) {
-                apiServiceInfo.innerHTML = '/api/posts/{POST_ID}/comments (proxied to fb-page-service-azzre.ondigitalocean.app)';
+                apiServiceInfo.innerHTML = '/api/posts/{POST_ID}/comments (proxied to fb-page-service-azzre.ondigitalocean.app via Vite)';
+            } else if (isDigitalOceanApp) {
+                apiServiceInfo.innerHTML = '/api/posts/{POST_ID}/comments (proxied to fb-page-service-azzre.ondigitalocean.app via Node.js server)';
             } else {
                 apiServiceInfo.innerHTML = 'https://fb-page-service-azzre.ondigitalocean.app/api/posts/{POST_ID}/comments (direct API call)';
             }
@@ -439,13 +450,20 @@
 
             // Use different API URLs for development vs production
             const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const baseUrl = isDevelopment 
-                ? '/api' // Use Vite proxy in development
-                : 'https://fb-page-service-azzre.ondigitalocean.app/api'; // Direct URL in production
+            const isDigitalOceanApp = window.location.hostname.includes('.ondigitalocean.app');
+            
+            let baseUrl;
+            if (isDevelopment) {
+                baseUrl = '/api'; // Use Vite proxy in development
+            } else if (isDigitalOceanApp) {
+                baseUrl = '/api'; // Use Node.js proxy on DigitalOcean App Platform
+            } else {
+                baseUrl = 'https://fb-page-service-azzre.ondigitalocean.app/api'; // Direct URL for other platforms
+            }
             
             const url = `${baseUrl}/posts/${postId}/comments?limit=${limit}&order=reverse_chronological&fields=id,message,created_time,from,like_count,comment_count,permalink_url,attachment{type,title,description,url,target,media{image{src,width,height}}}`;
             
-            console.log('Environment:', isDevelopment ? 'Development' : 'Production');
+            console.log('Environment:', isDevelopment ? 'Development' : (isDigitalOceanApp ? 'DigitalOcean App Platform' : 'Other Production'));
             console.log('Making API request to:', url);
             console.log('With token:', authToken.substring(0, 20) + '...');
             
@@ -799,13 +817,20 @@
                 
                 // Use different API URLs for development vs production
                 const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                const baseUrl = isDevelopment 
-                    ? '/api' // Use Vite proxy in development
-                    : 'https://fb-page-service-azzre.ondigitalocean.app/api'; // Direct URL in production
+                const isDigitalOceanApp = window.location.hostname.includes('.ondigitalocean.app');
+                
+                let baseUrl;
+                if (isDevelopment) {
+                    baseUrl = '/api'; // Use Vite proxy in development
+                } else if (isDigitalOceanApp) {
+                    baseUrl = '/api'; // Use Node.js proxy on DigitalOcean App Platform
+                } else {
+                    baseUrl = 'https://fb-page-service-azzre.ondigitalocean.app/api'; // Direct URL for other platforms
+                }
                 
                 const testUrl = `${baseUrl}/posts/test/comments?limit=1&order=reverse_chronological`;
                 
-                console.log('Environment:', isDevelopment ? 'Development' : 'Production');
+                console.log('Environment:', isDevelopment ? 'Development' : (isDigitalOceanApp ? 'DigitalOcean App Platform' : 'Other Production'));
                 console.log('Testing URL:', testUrl);
                 
                 const response = await fetch(testUrl, {
@@ -826,7 +851,7 @@
                 container.innerHTML = `
                     <div class="info-box">
                         <strong>CORS Test Results:</strong><br>
-                        Environment: ${isDevelopment ? 'Development (using proxy)' : 'Production (direct API)'}<br>
+                        Environment: ${isDevelopment ? 'Development (using Vite proxy)' : (isDigitalOceanApp ? 'DigitalOcean App Platform (using Node.js proxy)' : 'Other Production (direct API)')}<br>
                         Status: ${response.status}<br>
                         Response: ${data.substring(0, 200)}...
                     </div>

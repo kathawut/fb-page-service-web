@@ -18,28 +18,29 @@
 
 ## DigitalOcean App Platform Deployment
 
-### Option 1: Static Site (Recommended - FREE)
+### ⚠️ CORS Solution Required
+Due to CORS restrictions, this app **must be deployed as an App Service** (not static site) to use the built-in CORS proxy.
+
+### Deployment Steps
 1. Go to [DigitalOcean App Platform](https://cloud.digitalocean.com/apps)
 2. Click "Create App"
 3. **Source**: GitHub → `kathawut/fb-page-service-web` → `main` branch
-4. **App Type**: Static Site
+4. **App Type**: App Service (Node.js)
 5. **Configuration**:
-   - Build Command: `npm run build && cp public/comments-tester.html dist/`
-   - Output Directory: `dist`
-   - Environment Variables: `NODE_ENV=production`
-6. **Domain**: Use provided `.ondigitalocean.app` domain or add custom domain
-
-### Option 2: App Service ($5/month)
-1. Same steps as above but choose "App Service"
-2. **Configuration**:
    - Build Command: `npm run build && cp public/comments-tester.html dist/`
    - Run Command: `npm start`
    - Environment Variables: `NODE_ENV=production`, `PORT=8080`
+   - HTTP Port: 8080
+6. **Domain**: Use provided `.ondigitalocean.app` domain or add custom domain
 
-### Option 3: Container Deployment
-1. Choose "Docker Container"
-2. Use the included Dockerfile
-3. Build from GitHub source
+### Why App Service is Required
+- **CORS Proxy**: The Node.js server includes a built-in CORS proxy for `/api/*` routes
+- **Facebook API Access**: Bypasses browser CORS restrictions by proxying requests server-side
+- **Environment Detection**: Automatically detects DigitalOcean App Platform and uses proxy
+
+### Cost
+- **App Service**: $5/month (basic tier) - **Required for CORS functionality**
+- **Static Site**: Not suitable due to CORS limitations
 
 ## Post-Deployment Verification
 - [ ] Main page loads at `/`
